@@ -12,5 +12,7 @@ server.listen(process.env.PORT || 8000, () => {
 
 io.sockets.on('connection', socket => {
   console.log('socket connected = ', socket.id)
-  traceroute.trace('www.google.com', socket)
+  traceroute.trace('www.google.com', coords => {
+    socket.emit('coords', coords)
+  })
 })
