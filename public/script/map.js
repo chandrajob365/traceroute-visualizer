@@ -22,9 +22,7 @@ const locUpdateHandler = () => {
 }
 
 let map
-window.onload = () => {
-  initMap()
-}
+window.addEventListener = ('DOMContentLoaded', initMap)
 
 function cleanUp () {
   console.log('cleanup')
@@ -37,7 +35,7 @@ function cleanUp () {
   })
 }
 
-function initMap () {
+const initMap = () => {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
@@ -103,3 +101,4 @@ button.addEventListener('click', () => {
   const destination = document.getElementById('destination').value
   socket.emit('destination', destination)
 })
+
