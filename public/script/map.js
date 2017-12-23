@@ -2,20 +2,23 @@ const socket = io.connect()
 const minimumZoom = 3
 socket.emit('getNextCords')
 let olderCoords = {}
-socket.on('coords', coords => {
-  console.log('coordinates', coords)
-  if(coords.source && coords.lat && coords.lng) {
-    const { source, lat, lng } = coords
-    pointOnMap(lat, lng)
-    drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
-    olderCoords = {lat, lng}
-    moveToLocation(lat, lng)
-  } else {
-    drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
-      {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
-      "#db3236")
-  }
-})
+
+const locUpdateHandler = () => {
+  socket.on('coords', coords => {
+    console.log('coordinates', coords)
+    if(coords.source && coords.lat && coords.lng) {
+      const { source, lat, lng } = coords
+      pointOnMap(lat, lng)
+      drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
+      olderCoords = {lat, lng}
+      moveToLocation(lat, lng)
+    } else {
+      drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
+        {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
+        "#db3236")
+    }
+  })
+}
 
 let map
 window.onload = () => {
@@ -26,6 +29,7 @@ window.onload = () => {
       drawMap(latitude, longitude)
       pointOnMap(latitude, longitude)
     })
+    locUpdateHandler()
   } else {
     // Location not available
   }
