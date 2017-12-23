@@ -1,38 +1,39 @@
 const socket = io.connect()
-const minimumZoom = 3
-socket.emit('getNextCords')
-let olderCoords = {}
+const minZoom = 3
+socket.emit('getNextCoords')
 socket.on('coords', coords => {
-  console.log('coords', coords)
-  if(Object.keys(coords).length === 3) {
-    const { source, lat, lng} = coords
-    pointOnMap(lat, lng)
-    drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
-    olderCoords = {lat, lng}
-    moveToLocation(lat, lng)
+  console.log(coords)
+  // console.log('coords', coords)
+  if(Object.keys(coords).length === 3){
+    pointOnMap(coords.lat, coords.lng)
   }
 })
 
 let map
-window.onload = () => {
+// window.onload = () => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      olderCoords = {lat: position.coords.latitude, lng: position.coords.longitude}
       drawMap(position.coords.latitude, position.coords.longitude)
       pointOnMap(position.coords.latitude, position.coords.longitude)
+      // drawLine({lat: 20, lng: 24}, {lat: 1, lng: 20})
+      // setTimeout(function(){ moveToLocation(30, 40) }, 5000)
     })
   } else {
     // Location not available
   }
-}
+// }
 
 function drawMap(lat, lng) {
   const coordinates = { lat, lng }
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 4,
-    center: coordinates
+    zoom: minZoom,
+    center: coordinates,
   })
-  // return map
+
+  const allowedBounds = new google.maps.LatLngBounds(
+    new google.maps.LatLng(64, 149), 
+    new google.maps.LatLng(-6, 179)
+  )
 }
 
 function pointOnMap(lat, lng) {
@@ -59,5 +60,6 @@ function drawLine(source, destination) {
 function moveToLocation(lat, lng){
   const center = new google.maps.LatLng(lat, lng)
   map.panTo(center)
-  map.setZoom(4)
+  map.setZoom(6)
 }
+
