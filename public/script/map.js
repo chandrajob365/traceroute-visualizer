@@ -80,3 +80,9 @@ function moveToLocation (lat, lng) {
   map.panTo(center)
   map.setZoom(4)
 }
+
+const button = document.getElementById('sendDestination')
+button.addEventListener('click', () => {
+  const destination = document.getElementById('destination').value
+  console.log(destination)
+}, false)
