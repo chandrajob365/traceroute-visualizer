@@ -8,10 +8,10 @@ const locUpdateHandler = () => {
     console.log('coordinates', coords)
     if (coords.source && coords.lat && coords.lng) {
       const { source, lat, lng } = coords
+      moveToLocation(lat, lng)
       pointOnMap(lat, lng)
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
       olderCoords = {lat, lng}
-      moveToLocation(lat, lng)
     } else {
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
         {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
@@ -30,12 +30,10 @@ window.onload = () => {
       pointOnMap(latitude, longitude)
     })
     locUpdateHandler()
-  } else {
-    // Location not available
   }
 }
 
-function drawMap(lat, lng) {
+function drawMap (lat, lng) {
   const maxBounds = new google.maps.LatLngBounds(
     new google.maps.LatLng(-85, -175),
     new google.maps.LatLng(85, 175)
@@ -49,12 +47,10 @@ function drawMap(lat, lng) {
 
   let lastValidCenter = map.getCenter()
   google.maps.event.addListener(map, 'center_changed', () => {
-    if (allowedBounds.contains(map.getCenter())) {
-      console.log('If allowed bounds contains center')
+    if (maxBounds.contains(map.getCenter())) {
       lastValidCenter = map.getCenter()
-      return
+      map.panTo(lastValidCenter)
     }
-    map.panTo(lastValidCenter)
   })
 }
 
