@@ -4,7 +4,7 @@ socket.emit('getNextCords')
 let olderCoords = {}
 socket.on('coords', coords => {
   console.log('coordinates', coords)
-  if(Object.keys(coords).length === 3) {
+  if(coords.source && coords.lat && coords.lng) {
     const { source, lat, lng } = coords
     pointOnMap(lat, lng)
     drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
@@ -21,9 +21,10 @@ let map
 window.onload = () => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      olderCoords = {lat: position.coords.latitude, lng: position.coords.longitude}
-      drawMap(position.coords.latitude, position.coords.longitude)
-      pointOnMap(position.coords.latitude, position.coords.longitude)
+      const { latitude, longitude } = position.coords
+      olderCoords = { lat: latitude, lng: longitude }
+      drawMap(latitude, longitude)
+      pointOnMap(latitude, longitude)
     })
   } else {
     // Location not available
@@ -36,7 +37,6 @@ function drawMap(lat, lng) {
     zoom: 4,
     center: coordinates
   })
-  // return map
 }
 
 function pointOnMap(lat, lng) {
