@@ -3,13 +3,17 @@ const minimumZoom = 3
 socket.emit('getNextCords')
 let olderCoords = {}
 socket.on('coords', coords => {
-  console.log('coords', coords)
+  console.log('coordinates', coords)
   if(Object.keys(coords).length === 3) {
-    const { source, lat, lng} = coords
+    const { source, lat, lng } = coords
     pointOnMap(lat, lng)
     drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
     olderCoords = {lat, lng}
     moveToLocation(lat, lng)
+  } else {
+    drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
+      {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
+      "#db3236")
   }
 })
 
@@ -43,13 +47,13 @@ function pointOnMap(lat, lng) {
   })
 }
 
-function drawLine(source, destination) {
+function drawLine(source, destination, color = "#4885ed") {
   const line = new google.maps.Polyline({
     path: [
       new google.maps.LatLng(source),
       new google.maps.LatLng(destination)
     ],
-    strokeColor: "#4885ed",
+    strokeColor: color,
     strokeOpacity: 0.9,
     strokeWeight: 2,
     map: map
