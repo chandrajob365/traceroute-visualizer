@@ -22,6 +22,10 @@ const locUpdateHandler = () => {
 
 let map
 window.onload = () => {
+  // initMap()
+}
+
+function initMap () {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
@@ -83,6 +87,7 @@ function moveToLocation (lat, lng) {
 
 const button = document.getElementById('sendDestination')
 button.addEventListener('click', () => {
+  initMap()
   const destination = document.getElementById('destination').value
   socket.emit('destination', destination)
 }, false)
