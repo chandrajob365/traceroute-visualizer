@@ -1,18 +1,26 @@
 const socket = io.connect()
 socket.emit('getNextCords')
-socket.on('latestCords', coords => {
+let olderCoords = {}
+socket.on('coords', coords => {
   console.log('coords', coords)
+  if (coords.source && coords.lat && coords.lng) {
+    pointOnMap(coords.lat, coords.lng)
+    drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, {lat: coords.lat, lng: coords.lng})
+    olderCoords = {lat: coords.lat, lng: coords.lng}
+    setTimeout(() => moveToLocation(coords.lat, coords.lng), 5000)
+  }
 })
 
 let map
 window.onload = () => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
+      olderCoords = {lat: position.coords.latitude, lng: position.coords.longitude}
       drawMap(position.coords.latitude, position.coords.longitude)
       pointOnMap(position.coords.latitude, position.coords.longitude)
-      pointOnMap(position.coords.latitude + 10, position.coords.longitude + 10)      
+      pointOnMap(position.coords.latitude + 10, position.coords.longitude + 10)
       drawLine({lat: 20, lng: 24}, {lat: 1, lng: 20})
-      setTimeout(function(){ moveToLocation(30, 40) }, 5000)
+      setTimeout(() => moveToLocation(30, 40), 5000)
     })
   } else {
     // Location not available
