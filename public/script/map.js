@@ -6,7 +6,7 @@ let olderCoords = {}
 const locUpdateHandler = () => {
   socket.on('coords', coords => {
     console.log('coordinates', coords)
-    if(coords.source && coords.lat && coords.lng) {
+    if (coords.source && coords.lat && coords.lng) {
       const { source, lat, lng } = coords
       pointOnMap(lat, lng)
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
@@ -15,14 +15,14 @@ const locUpdateHandler = () => {
     } else {
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
         {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
-        "#db3236")
+        '#db3236')
     }
   })
 }
 
 let map
 window.onload = () => {
-  if ("geolocation" in navigator) {
+  if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
       olderCoords = { lat: latitude, lng: longitude }
@@ -48,17 +48,17 @@ function drawMap(lat, lng) {
   })
 
   let lastValidCenter = map.getCenter()
-  google.maps.event.addListener(map, 'center_changed', function() {
-      if (allowedBounds.contains(map.getCenter())) {
-          lastValidCenter = map.getCenter()
-          return
-      }  
-      map.panTo(lastValidCenter)
+  google.maps.event.addListener(map, 'center_changed', () => {
+    if (allowedBounds.contains(map.getCenter())) {
+      console.log('If allowed bounds contains center')
+      lastValidCenter = map.getCenter()
+      return
+    }
+    map.panTo(lastValidCenter)
   })
-
 }
 
-function pointOnMap(lat, lng) {
+function pointOnMap (lat, lng) {
   const coordinates = { lat, lng }
   const marker = new google.maps.Marker({
     position: coordinates,
@@ -66,7 +66,7 @@ function pointOnMap(lat, lng) {
   })
 }
 
-function drawLine(source, destination, color = "#4885ed") {
+function drawLine (source, destination, color = '#4885ed') {
   const line = new google.maps.Polyline({
     path: [
       new google.maps.LatLng(source),
@@ -79,7 +79,7 @@ function drawLine(source, destination, color = "#4885ed") {
   })
 }
 
-function moveToLocation(lat, lng){
+function moveToLocation (lat, lng) {
   const center = new google.maps.LatLng(lat, lng)
   map.panTo(center)
   map.setZoom(4)
