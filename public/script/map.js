@@ -2,12 +2,13 @@ const socket = io.connect()
 const minimumZoom = 3
 socket.emit('getNextCords')
 let olderCoords = {}
-
+const markers = []
+const lines = []
 const locUpdateHandler = () => {
   socket.on('coords', coords => {
     console.log('coordinates', coords)
     if (coords.source && coords.lat && coords.lng) {
-      const { source, lat, lng } = coords
+      const { lat, lng } = coords
       moveToLocation(lat, lng)
       pointOnMap(lat, lng)
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
@@ -22,7 +23,18 @@ const locUpdateHandler = () => {
 
 let map
 window.onload = () => {
-  // initMap()
+  initMap()
+}
+
+function cleanUp () {
+  console.log('cleanup')
+  markers.map((current) => {
+    current.setPosition(null)
+  })
+
+  lines.map((current) => {
+    current.setMap(null)
+  })
 }
 
 function initMap () {
@@ -45,7 +57,7 @@ function drawMap (lat, lng) {
 
   const coordinates = { lat, lng }
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 4,
+    zoom: 8,
     center: coordinates
   })
 
@@ -60,14 +72,14 @@ function drawMap (lat, lng) {
 
 function pointOnMap (lat, lng) {
   const coordinates = { lat, lng }
-  const marker = new google.maps.Marker({
+  markers.push(new google.maps.Marker({
     position: coordinates,
     map: map
-  })
+  }))
 }
 
 function drawLine (source, destination, color = '#4885ed') {
-  const line = new google.maps.Polyline({
+  lines.push(new google.maps.Polyline({
     path: [
       new google.maps.LatLng(source),
       new google.maps.LatLng(destination)
@@ -76,7 +88,7 @@ function drawLine (source, destination, color = '#4885ed') {
     strokeOpacity: 0.9,
     strokeWeight: 2,
     map: map
-  })
+  }))
 }
 
 function moveToLocation (lat, lng) {
@@ -87,7 +99,7 @@ function moveToLocation (lat, lng) {
 
 const button = document.getElementById('sendDestination')
 button.addEventListener('click', () => {
-  initMap()
+  cleanUp()
   const destination = document.getElementById('destination').value
   socket.emit('destination', destination)
-}, false)
+})
