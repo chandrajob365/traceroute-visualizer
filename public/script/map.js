@@ -84,5 +84,5 @@ function moveToLocation (lat, lng) {
 const button = document.getElementById('sendDestination')
 button.addEventListener('click', () => {
   const destination = document.getElementById('destination').value
-  console.log(destination)
+  socket.emit('destination', destination)
 }, false)
