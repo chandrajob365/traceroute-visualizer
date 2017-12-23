@@ -1,5 +1,18 @@
+body {
+  margin: 0 auto;
+  margin: 0;
+  padding: 0;
+}
+
 #map {
   height: 600px;
   width: 80%;
-  margin: 0 auto;
- }
+}
+
+.form {
+  text-align: center;
+}
+
+button {
+  margin: 10px;
+}
