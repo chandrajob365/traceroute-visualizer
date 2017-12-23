@@ -1,0 +1,25 @@
+{
+  "name": "traceroute-visualizer",
+  "version": "0.0.1",
+  "description": "Traceroute Visualizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anirudhbs/traceroute-visualizer.git"
+  },
+  "keywords": [
+    "traceroute"
+  ],
+  "author": "-",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anirudhbs/traceroute-visualizer/issues"
+  },
+  "homepage": "https://github.com/anirudhbs/traceroute-visualizer#readme",
+  "dependencies": {
+    "node-fetch": "^1.7.3"
+  }
+}
