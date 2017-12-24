@@ -4,7 +4,7 @@ const socket = io.connect()
 let map
 let startLoc
 let olderCoords = {}
-const markers = []
+let markers = []
 const lines = []
 let maxBounds = new google.maps.LatLngBounds()
 
@@ -12,7 +12,7 @@ socket.emit('getNextCords')
 
 const locUpdateHandler = () => {
   socket.on('coords', coords => {
-    console.log('coordinates', coords)
+    // console.log('coordinates', coords)
     if (coords.source && coords.lat && coords.lng) {
       const { lat, lng } = coords
       moveToLocation(pointOnMap(lat, lng))
@@ -39,25 +39,20 @@ function cleanUp () {
 
 const initMap = () => {
   if ('geolocation' in navigator) {
-    console.log('Geolocation service available')
+    // console.log('Geolocation service available')
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords
-      startLoc = new google.maps.LatLng(position.coords)
+      startLoc = {latitude, longitude}
       olderCoords = { lat: latitude, lng: longitude }
       drawMap(latitude, longitude)
       pointOnMap(latitude, longitude)
     })
-  //   let listener = google.maps.event.addListener(map, "idle", function () {
-  //     map.setCenter()
-  //     // map.setZoom(3);
-  //     google.maps.event.removeListener(listener);
-  // })
     locUpdateHandler()
   }
 }
 
 function drawMap (lat, lng) {
-  console.log('Drawing map')
+  // console.log('Drawing map')
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 10,
     center: { lat, lng }
@@ -65,7 +60,7 @@ function drawMap (lat, lng) {
 }
 
 function pointOnMap (lat, lng) {
-  console.log('Pointing on map')
+  // console.log('Pointing on map')
   const coordinates = new google.maps.LatLng(lat, lng)
   markers.push(new google.maps.Marker({
     position: coordinates,
@@ -75,7 +70,7 @@ function pointOnMap (lat, lng) {
 }
 
 function drawLine (source, destination, color = '#4885ed') {
-  console.log('Drawing polyline---------------')
+  // console.log('Drawing polyline---------------')
   lines.push(new google.maps.Polyline({
     path: [
       new google.maps.LatLng(source),
@@ -89,8 +84,7 @@ function drawLine (source, destination, color = '#4885ed') {
 }
 
 function moveToLocation (coords) {
-  console.log('Moving to Loc')
-  // const center = new google.maps.LatLng(lat, lng)
+  // console.log('Moving to Loc')
   maxBounds.extend(coords)
   map.fitBounds(maxBounds)
   map.panToBounds(maxBounds)
@@ -105,8 +99,13 @@ button.addEventListener('click', () => {
   if (validateName(destination)) {
     cleanUp()
     socket.emit('destination', destination)
-    initMap()
-  } else  document.getElementById('destination').value = 'Enter valid hostname'
+    drawMap(startLoc.latitude, startLoc.longitude)
+    markers = []
+    let maxBounds = new google.maps.LatLngBounds()
+    olderCoords = {lat: startLoc.latitude, lng: startLoc.longitude}
+    moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude))
+    locUpdateHandler()
+  } else document.getElementById('destination').value = 'Enter valid hostname'
 })
 
 window.addEventListener = ('DOMContentLoaded', initMap)
