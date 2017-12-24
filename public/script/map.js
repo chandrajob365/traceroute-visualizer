@@ -45,7 +45,7 @@ const initMap = () => {
       startLoc = {latitude, longitude}
       olderCoords = { lat: latitude, lng: longitude }
       drawMap(latitude, longitude)
-      pointOnMap(latitude, longitude)
+      pointOnMap(latitude, longitude, 'blue')
     })
     locUpdateHandler()
   }
@@ -59,12 +59,13 @@ function drawMap (lat, lng) {
   })
 }
 
-function pointOnMap (lat, lng) {
+function pointOnMap (lat, lng, color = 'green') {
   // console.log('Pointing on map')
   const coordinates = new google.maps.LatLng(lat, lng)
   markers.push(new google.maps.Marker({
     position: coordinates,
-    map: map
+    map: map,
+    icon: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`
   }))
   return coordinates
 }
@@ -93,6 +94,7 @@ function moveToLocation (coords) {
 const validateName = (destination) => {
   return (/^([a-zA-Z0-9]*|([a-zA-Z0-9](\\[a-zA-Z0-9])*))\.[a-z]*$/.test(destination))
 }
+
 const button = document.getElementById('sendDestination')
 button.addEventListener('click', () => {
   const destination = document.getElementById('destination').value
@@ -103,7 +105,7 @@ button.addEventListener('click', () => {
     markers = []
     let maxBounds = new google.maps.LatLngBounds()
     olderCoords = {lat: startLoc.latitude, lng: startLoc.longitude}
-    moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude))
+    moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude, 'blue'))
     locUpdateHandler()
   } else document.getElementById('destination').value = 'Enter valid hostname'
 })
