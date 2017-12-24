@@ -14,8 +14,8 @@ const locUpdateHandler = () => {
   socket.on('coords', coords => {
     // console.log('coordinates', coords)
     if (coords.source && coords.lat && coords.lng) {
-      const { lat, lng } = coords
-      moveToLocation(pointOnMap(lat, lng))
+      const {lat, lng, source} = coords
+      moveToLocation(pointOnMap(lat, lng, source))
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
       olderCoords = {lat, lng}
     }
@@ -58,11 +58,20 @@ function drawMap (lat, lng) {
 function pointOnMap (lat, lng, color = 'green') {
   // console.log('Pointing on map')
   const coordinates = new google.maps.LatLng(lat, lng)
-  markers.push(new google.maps.Marker({
+  let marker = new google.maps.Marker({
     position: coordinates,
     map: map,
     icon: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`
-  }))
+  })
+  markers.push(marker)
+  var infoWnd = new google.maps.InfoWindow()
+  infoWnd.setContent('<div class="scrollFix">' + 'IP: ' + ip + '</div>')
+  google.maps.event.addListener(marker, 'mouseover', () => {
+    infoWnd.open(map, marker)
+  })
+  google.maps.event.addListener(marker, 'mouseout', () => {
+    infoWnd.close()
+  })
   return coordinates
 }
 
