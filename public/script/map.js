@@ -41,7 +41,7 @@ const initMap = () => {
       startLoc = {latitude, longitude}
       olderCoords = { lat: latitude, lng: longitude }
       drawMap(latitude, longitude)
-      pointOnMap(latitude, longitude, 'blue')
+      pointOnMap(latitude, longitude, '', 'blue')
     })
   }
 }
@@ -55,7 +55,7 @@ function drawMap (lat, lng) {
   console.log(map.zoom)
 }
 
-function pointOnMap (lat, lng, color = 'green') {
+function pointOnMap (lat, lng, ip, color = 'green') {
   // console.log('Pointing on map')
   const coordinates = new google.maps.LatLng(lat, lng)
   let marker = new google.maps.Marker({
