@@ -11,7 +11,6 @@ server.listen(process.env.PORT || 8000, () => {
 })
 
 io.sockets.on('connection', socket => {
-  console.log('socket connected = ', socket.id)
   socket.on('destination', (data) => {
     traceroute.trace(data, (err, coords) => {
       if (err) throw err
