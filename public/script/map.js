@@ -61,7 +61,8 @@ function pointOnMap (lat, lng, color = 'green') {
   let marker = new google.maps.Marker({
     position: coordinates,
     map: map,
-    icon: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`
+    icon: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
+    animation: google.maps.Animation.DROP
   })
   markers.push(marker)
   var infoWnd = new google.maps.InfoWindow()
