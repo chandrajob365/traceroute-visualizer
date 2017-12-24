@@ -49,7 +49,7 @@ const initMap = () => {
 function drawMap (lat, lng) {
   // console.log('Drawing map')
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 10,
+    zoom: 18,
     center: { lat, lng }
   })
   console.log(map.zoom)
@@ -111,7 +111,7 @@ button.addEventListener('click', () => {
     markers = []
     maxBounds = new google.maps.LatLngBounds()
     olderCoords = {lat: startLoc.latitude, lng: startLoc.longitude}
-    moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude, 'blue'))
+    moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude, '', 'blue'))
     locUpdateHandler()
   } else document.getElementById('destination').value = 'Enter valid hostname'
 })
