@@ -47,7 +47,6 @@ const initMap = () => {
       drawMap(latitude, longitude)
       pointOnMap(latitude, longitude)
     })
-    locUpdateHandler()
   }
 }
 
@@ -57,6 +56,7 @@ function drawMap (lat, lng) {
     zoom: 10,
     center: { lat, lng }
   })
+  console.log(map.zoom)
 }
 
 function pointOnMap (lat, lng) {
@@ -101,7 +101,7 @@ button.addEventListener('click', () => {
     socket.emit('destination', destination)
     drawMap(startLoc.latitude, startLoc.longitude)
     markers = []
-    let maxBounds = new google.maps.LatLngBounds()
+    maxBounds = new google.maps.LatLngBounds()
     olderCoords = {lat: startLoc.latitude, lng: startLoc.longitude}
     moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude))
     locUpdateHandler()
