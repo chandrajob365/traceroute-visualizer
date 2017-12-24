@@ -18,10 +18,6 @@ const locUpdateHandler = () => {
       moveToLocation(pointOnMap(lat, lng))
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
       olderCoords = {lat, lng}
-    } else {
-      drawLine({lat: olderCoords.lat, lng: olderCoords.lng},
-        {lat: olderCoords.lat + 1, lng: olderCoords.lng + 1},
-        '#db3236')
     }
   })
 }
@@ -110,4 +106,4 @@ button.addEventListener('click', () => {
   } else document.getElementById('destination').value = 'Enter valid hostname'
 })
 
-window.addEventListener = ('DOMContentLoaded', initMap)
+initMap()
