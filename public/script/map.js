@@ -1,15 +1,31 @@
 const socket = io.connect()
-
-// const minimumZoom = 3
 let map
 let startLoc
 let olderCoords = {}
 let markers = []
 const lines = []
 let maxBounds = new google.maps.LatLngBounds()
-
+const message = document.getElementById('msg')
+const destination = document.getElementById('destination')
 socket.emit('getNextCords')
 
+socket.on('errorMsg', errMsg => {
+  message.style.display = 'inline'
+  message.style.color = 'red'
+  message.innerHTML = errMsg
+  destination.removeAttribute('disabled')
+  destination.value = ''
+  destination.focus()
+})
+
+socket.on('completed', () => {
+  message.style.display = 'inline'
+  message.style.color = 'blue'
+  message.innerHTML = 'Trace for destination ' + destination.value + ' completed'
+  destination.removeAttribute('disabled')
+  destination.value = ''
+  destination.focus()
+})
 const locUpdateHandler = () => {
   socket.on('coords', coords => {
     // console.log('coordinates', coords)
@@ -91,29 +107,27 @@ function drawLine (source, destination, color = '#4885ed') {
 }
 
 function moveToLocation (coords) {
-  // console.log('Moving to Loc')
   maxBounds.extend(coords)
   map.fitBounds(maxBounds)
   map.panToBounds(maxBounds)
 }
 
-const validateName = (destination) => {
-  return (/^([a-zA-Z0-9]*|([a-zA-Z0-9](\\[a-zA-Z0-9])*))\.[a-z]*$/.test(destination))
-}
-
 const button = document.getElementById('sendDestination')
 button.addEventListener('click', () => {
-  const destination = document.getElementById('destination').value
-  if (validateName(destination)) {
+  message.innerHTML = ''
+  message.style.display = 'none'
+  let destName = destination.value
+  if (destName) {
     cleanUp()
-    socket.emit('destination', destination)
+    destination.setAttribute('disabled', true)
+    socket.emit('destination', destName)
     drawMap(startLoc.latitude, startLoc.longitude)
     markers = []
     maxBounds = new google.maps.LatLngBounds()
     olderCoords = {lat: startLoc.latitude, lng: startLoc.longitude}
     moveToLocation(pointOnMap(startLoc.latitude, startLoc.longitude, '', 'blue'))
     locUpdateHandler()
-  } else document.getElementById('destination').value = 'Enter valid hostname'
+  }
 })
 
 initMap()
