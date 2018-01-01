@@ -134,4 +134,24 @@ button.addEventListener('click', () => {
   }
 })
 
+socket.on('connect_error', err => {
+  console.log('No connection to server ', err)
+})
+
+socket.on('reconnect_failed', () => {
+  console.log('Reconnect failed')
+})
+
+socket.on('reconnect_error', (err) => {
+  console.log('Reconnect Error ', err)
+})
+
+socket.on('disconnect', () => {
+  console.log('Disconnect from server')
+})
+
+socket.on('error', (err) => {
+  console.log('Error connecting to server ', err)
+})
+
 initMap()
