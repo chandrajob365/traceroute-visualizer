@@ -18,22 +18,27 @@ socket.on('errorMsg', errMsg => {
   destination.focus()
 })
 
-socket.on('completed', () => {
+const onTraceComplete = target => {
   message.style.display = 'inline'
   message.style.color = 'blue'
-  message.innerHTML = 'Trace for destination ' + destination.value + ' completed'
+  console.log('[ onTraceComplete ] destination = ', target)
+  message.innerHTML = 'Trace for destination ' + target + ' completed'
   destination.removeAttribute('disabled')
   destination.value = ''
   destination.focus()
-})
+}
+
 const locUpdateHandler = () => {
   socket.on('coords', coords => {
-    // console.log('coordinates', coords)
     if (coords.source && coords.lat && coords.lng) {
-      const {lat, lng, source} = coords
+      const {lat, lng, source, status, target} = coords
       moveToLocation(pointOnMap(lat, lng, source))
       drawLine({lat: olderCoords.lat, lng: olderCoords.lng}, { lat, lng })
       olderCoords = {lat, lng}
+      if (status === 'done') {
+        console.log('coords = ', coords)
+        onTraceComplete(target)
+      }
     }
   })
 }
@@ -72,7 +77,6 @@ function drawMap (lat, lng) {
 }
 
 function pointOnMap (lat, lng, ip, color = 'green') {
-  // console.log('Pointing on map')
   const coordinates = new google.maps.LatLng(lat, lng)
   let marker = new google.maps.Marker({
     position: coordinates,
